@@ -1,0 +1,33 @@
+{% extends 'search/base.html' %}
+
+{% block content %}
+
+<div>
+    <div class="row h-100 text-white">
+        <div class="col-sm-7 text-right my-4">
+            <h1 class="text-white">SE CONNECTER</h1>
+            {% if error %}
+                <p>Utilisateur inconnu ou mauvais de mot de passe.</p>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                Vous êtes connecté, {{ user.username }} !
+        </div>
+
+        <div class="col-sm-7 text-right my-4">
+            {% else %}
+            <form method="post" action=".">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" name="log_in" value="Se connecter" />
+            </form>
+        </div>
+
+        <div class="col-sm-7 text-right my-4">
+            <a  class="nounderline" href="{% url 'account:sign_up' %}">Pas encore inscrit(e)?</a>
+        </div>
+            {% endif %}
+    </div>
+</div>
+
+{% endblock %}

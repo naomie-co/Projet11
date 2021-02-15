@@ -1,0 +1,31 @@
+{% extends 'search/base.html' %}
+
+{% block content %}
+
+<div>
+    <div class="row h-100 text-white">
+        <div class="col-sm-7 text-right my-4">
+            <h1>CREER UN COMPTE</h1>
+            {% if error %}
+                <p class="error">Ce compte existe déjà</p>
+            {% endif %}
+
+            {% if userid.is_authenticated %}
+                <p>Vous êtes connecté, {{ userid.username }} ! </p>    
+        </div>
+
+    
+        <div class="col-sm-7 text-right my-4">
+            {% else %}
+            <form method="post" action=".">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="S'inscrire" />
+            </form>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

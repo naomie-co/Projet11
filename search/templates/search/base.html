@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% load static %}
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link href="{% static 'search/css/style.css' %}" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/434d30335f.js" crossorigin="anonymous"></script>
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'search/img/icone/favicon.png' %}" type="image/png" sizes="16x16">
+
+    <title>Pur beurre</title>
+  </head>
+  <body id="page-top">
+
+    <!-- Nav bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+      <a class="navbar-brand text-light" href="{% url 'index' %}">
+        <img src="{% static 'search/img/marque_logo/full_size_logo.png' %}" width="40" height="40" class="d-inline-block align-top" alt="Logo Pur Beurre">
+          <h2 class="d-inline-block">Pur Beurre</h2>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <form class="form-inline my-lg-2" action="{% url 'search:products' %}" method="GET">
+              <input class="form-control-sm mr-sm-2" id="search" type="search" placeholder="Produit" name="query">
+              <button class="btn btn-sm btn-outline-light my-2 my-sm-0" type="submit">Chercher</button>
+            </form>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" name="user_i" href="{% url 'account:log_in' %}">
+              <i class="fas fa-user fa-2x"></i>
+            </a>
+          </li>
+          {% if user.is_authenticated %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'search:my_selection' user=user.id %}">
+                <i class="fas fa-carrot fa-2x"></i>
+              </a>
+            </li>
+          {% else %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'account:log_in' %}">
+                <i class="fas fa-carrot fa-2x"></i>
+              </a>
+            </li>
+          {% endif %}
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'account:log_out' %}">
+                <i class="fas fa-sign-out-alt fa-2x"></i>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+
+
+   
+    <section class="main">
+      {% block content %}{% endblock %}
+    </section>
+
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <a class="nounderline" href="{% url 'search:legal' %}">Mentions légales</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+
+
+
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>

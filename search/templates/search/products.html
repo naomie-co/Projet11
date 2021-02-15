@@ -1,0 +1,47 @@
+{% extends 'search/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+  <div class="container-fluid" class="base">
+    <div class="row align-items-center justify-content-center text-center">
+      <div class="col-lg-10 my-4">
+        <h1 class="text-white">{{title}}</h1>
+        <hr class="divider my-4">
+      </div>
+    </div>
+
+
+  <div class="row">
+		{% for product in products %}
+		    <div class="col-lg-4 text-center my-4">
+		        <a href="{% url 'search:detail' product_id=product.id %}">
+		          <img class="img-responsive img_product" width="300" height="300" src="{{ product.picture }}" alt="{{ product.name }}">
+		          <img class="img-responsive thumbnails" width="50" height="60" src="{% static 'search/img/thumbnails/' %}{{ product.nutriscore}}.png"  alt="{{ product.nutriscore }}">
+		        </a>
+		        <h3><a href="{% url 'search:detail' product_id=product.id %}">{{ product.name }}</a></h3>
+		        
+			    {% if user.is_authenticated %}
+		        	<form method="post" action="{% url 'search:products' %}">
+		        		{% csrf_token %}
+		        		<i class="far fa-square"></i> 
+		        		<input type="hidden" name="user" value="{{ user.id }}" />
+		        		<input type="hidden" name="product" value="{{ product.id }}" />      		
+		        		<input type="submit" name="save" value="Sauvegarder"/>	
+                	</form>
+
+			        {% if error %}
+                		<p class="error">Ce produit est déjà sauvegardé</p>
+            		{% endif %}
+
+			    {% else %}
+			    	<p><a name="log_in" href="{% url 'account:log_in' %}">Connectez-vous pour enregistrer ce produit</a></p>
+          		{% endif %}
+		    </div>
+		  {% if forloop.counter|divisibleby:3 %}<div class="clearfix"></div>{% endif %}
+		{% endfor %}
+  </div>
+
+{% endblock %}
