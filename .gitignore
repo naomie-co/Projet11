@@ -3,3 +3,5 @@ __pycache__/
 .coverage
 geckodriver.log
 *.pyc
+plateforme_project/INFO.py
+staticfiles/
