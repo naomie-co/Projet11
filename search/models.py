@@ -23,6 +23,7 @@ class op_food(models.Model):
     picture = models.URLField(null=True)
     picture_100g = models.URLField(null=True)
     categorie = models.ForeignKey(categorie, on_delete=models.CASCADE)
+    store_available = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return self.name
@@ -35,3 +36,12 @@ class substitute(models.Model):
 
     def __str__(self):
         return self.user.id, self.id_substitute.id
+
+
+class store(models.Model):
+	"""Stores the list of store names and coordinates"""
+	name = models.CharField(max_length=100)
+	coordinates = models.FloatField()
+
+	def __str__(self):
+		return self.name

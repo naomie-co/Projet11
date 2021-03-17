@@ -46,7 +46,7 @@ class Command(BaseCommand):
             try:
                 data.append([val["product_name_fr"],\
                 val["nutrition_grades"], val["ingredients_text_fr"],\
-                val["image_nutrition_url"], val["image_url"], val["url"]])
+                val["image_nutrition_url"], val["image_url"], val["url"], val["stores"]])
                 i += 1
                 if i > 40:
                     break
@@ -62,20 +62,30 @@ class Command(BaseCommand):
         categories = categorie.objects.all()
         for cat in categories:
             for value in self.request_product(cat.name):
-                new_values = op_food(categorie=cat, \
+                new_values = op_food.objects.update_or_create(categorie=cat, \
                 name=value[0], nutriscore=value[1], ingredient=value[2], \
-                picture_100g=value[3], picture=value[4], url=value[5])
-                new_values.save()
+                picture_100g=value[3], picture=value[4], url=value[5], store_available=value[6])
 
-    def delete_data(self):
+                #test to check if a product is inserted only once in the table
+                # test = op_food.objects.filter(name=value[0])
+                # print(test)
+
+    # def delete_data(self):
         """Delete data from categorie, op_food and substitute tables"""
-        categorie.objects.all().delete()
-        op_food.objects.all().delete()
-        substitute.objects.all().delete()
+        # categorie.objects.all().delete()
+        # op_food.objects.all().delete()
+        # substitute.objects.all().delete()
 
     def handle(self, *args, **options):
         """Delete data then fill the database
         """
-        self.delete_data()
-        self.categorie_db()
-        self.search_product()
+        if categorie.objects.count() == 0: 
+            self.categorie_db()
+            self.search_product()
+        else:
+            self.search_product()
+
+
+        # self.delete_data()
+        # self.categorie_db()
+        # self.search_product()
