@@ -2,7 +2,7 @@
 
 import requests
 from django.core.management.base import BaseCommand
-from search.models import categorie, op_food, substitute
+from search.models import Categorie, Op_food, Substitute, Store
 from search.const import CATEGORIES
 
 
@@ -20,14 +20,14 @@ class Command(BaseCommand):
             'tagtype_0':'categories',
             'tag_contains_0':'contains',
             'tag_0':'',
-            'page_size':50,
+            'page_size':10,
             'json':1
         }
 
     def categorie_db(self):
-        """Insert categories into .models categorie's table"""
+        """Insert categories into .models Categorie's table"""
         for elt in CATEGORIES:
-            cat = categorie()
+            cat = Categorie()
             cat.name = elt
             #cat.clean()
             cat.save()
@@ -48,44 +48,71 @@ class Command(BaseCommand):
                 val["nutrition_grades"], val["ingredients_text_fr"],\
                 val["image_nutrition_url"], val["image_url"], val["url"], val["stores"]])
                 i += 1
-                if i > 40:
+                if i > 5:
                     break
             except KeyError:
                 print("Erreur dans la réception des données : ", val)
         return data
 
+    def convert_string(self, string):
+        new_list = list(string.split(","))
+        return new_list
+
     def search_product(self):
-        """From the categories of the category table, launch a request to the
+        """From the categories of the Category table, launch a request to the
         OFF API with the request_product method. Retrieve the OFF data to
-        insert into the op_food table"""
-        categories = categorie()
-        categories = categorie.objects.all()
+        insert into the Op_food table"""
+        categories = Categorie()
+        categories = Categorie.objects.all()
         for cat in categories:
             for value in self.request_product(cat.name):
-                new_values = op_food.objects.update_or_create(categorie=cat, \
+                list_of_stores = self.convert_string(value[6])
+                list_of_stores.lower()
+                new_values = Op_food.objects.update_or_create(categorie=cat, \
                 name=value[0], nutriscore=value[1], ingredient=value[2], \
-                picture_100g=value[3], picture=value[4], url=value[5], store_available=value[6])
+                picture_100g=value[3], picture=value[4], url=value[5], \
+                store_available=list_of_stores[0])
+                entry.Store.add(new_values)
+                #new_values.Store_available.add(elt) for elt in list_of_stores
+
+
+                print(type(list_of_stores), value[0], list_of_stores)
 
                 #test to check if a product is inserted only once in the table
-                # test = op_food.objects.filter(name=value[0])
+                # test = Op_food.objects.filter(name=value[0])
                 # print(test)
+    def add_store(self):
+        """
+        Add store in the Store's table from a csv file
+        """
+        with open('Projet11/stores.csv') as stores:
+            reader = csv.reader(stores)
+            for row in reader:
+                 _, created = Store.objects.get_or_create(
+                name=row[0],
+                coordinates=row[1],)
+            row.save()
 
-    # def delete_data(self):
-        """Delete data from categorie, op_food and substitute tables"""
-        # categorie.objects.all().delete()
-        # op_food.objects.all().delete()
-        # substitute.objects.all().delete()
+
+
+
+    def delete_data(self):
+        """Delete data from Categorie, Op_food and Substitute tables"""
+        Categorie.objects.all().delete()
+        Op_food.objects.all().delete()
+        Substitute.objects.all().delete()
 
     def handle(self, *args, **options):
         """Delete data then fill the database
         """
-        if categorie.objects.count() == 0: 
-            self.categorie_db()
-            self.search_product()
-        else:
-            self.search_product()
+        #if categorie.objects.count() == 0: 
+        #    self.categorie_db()
+        #    self.search_product()
+        #else:
+        #    self.search_product()
 
 
-        # self.delete_data()
-        # self.categorie_db()
-        # self.search_product()
+        self.delete_data()
+        self.add_store()
+        self.categorie_db()
+        self.search_product()

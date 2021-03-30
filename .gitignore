@@ -5,3 +5,4 @@ geckodriver.log
 *.pyc
 plateforme_project/settings/INFO.py
 staticfiles/
+stores.csv

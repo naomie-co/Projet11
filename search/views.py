@@ -3,7 +3,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.db import IntegrityError
-from search.models import op_food, substitute
+from search.models import Op_food, Substitute
 
 
 def index(request):
@@ -17,11 +17,11 @@ def products(request):
     if request.method == "GET":
         query = request.GET.get('query')
         if not query:
-            products = op_food.objects.order_by('nutriscore')[:30]
+            products = Op_food.objects.order_by('nutriscore')[:30]
             title = "Voici une sélection de produits :"
         else:
             query = query.capitalize()
-            products = op_food.objects.filter(name__contains=query).order_by('nutriscore')[:6]
+            products = Op_food.objects.filter(name__contains=query).order_by('nutriscore')[:6]
             title = "Résultats de la recherche : %s"%query
             if len(products) == 0:
                 title = "Aucun produit ne correspond aux critères de votre recherche"
@@ -35,9 +35,9 @@ def products(request):
         try:
             product = request.POST.get('product')
             user = request.POST.get('user')
-            prod = op_food.objects.get(id=product)
+            prod = Op_food.objects.get(id=product)
             user_id = User.objects.get(id=user)
-            substitute.objects.get_or_create(id_substitute=prod, user=user_id)
+            Substitute.objects.get_or_create(id_substitute=prod, user=user_id)
         except IntegrityError:
             error = True
         return redirect('search:my_selection', user=user)
@@ -45,7 +45,7 @@ def products(request):
 
 def detail(request, product_id):
     """Function that display the detail page of a product"""
-    product = get_object_or_404(op_food, id=product_id)
+    product = get_object_or_404(Op_food, id=product_id)
     context = {
         'product': product,
     }
@@ -58,11 +58,11 @@ def my_selection(request, user):
     if request.user.is_authenticated:
         userid = User.objects.get(id=user)
 
-        subs = substitute.objects.filter(user=userid)
+        subs = Substitute.objects.filter(user=userid)
 
         subs = [elt.id_substitute.id for elt in subs]
 
-        products = [op_food.objects.filter(id=sub)[0] for sub in subs]
+        products = [Op_food.objects.filter(id=sub)[0] for sub in subs]
 
         context = {
             'products': products,
