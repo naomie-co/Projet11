@@ -4,6 +4,8 @@ import requests
 from django.core.management.base import BaseCommand
 from search.models import Categorie, Op_food, Substitute, Store
 from search.const import CATEGORIES
+import csv
+
 
 
 
@@ -55,6 +57,7 @@ class Command(BaseCommand):
         return data
 
     def convert_string(self, string):
+        string = string.lower()
         new_list = list(string.split(","))
         return new_list
 
@@ -67,13 +70,12 @@ class Command(BaseCommand):
         for cat in categories:
             for value in self.request_product(cat.name):
                 list_of_stores = self.convert_string(value[6])
-                list_of_stores.lower()
-                new_values = Op_food.objects.update_or_create(categorie=cat, \
+                print(list_of_stores)
+                new_product = Op_food.objects.create(categorie=cat, \
                 name=value[0], nutriscore=value[1], ingredient=value[2], \
-                picture_100g=value[3], picture=value[4], url=value[5], \
-                store_available=list_of_stores[0])
-                entry.Store.add(new_values)
-                #new_values.Store_available.add(elt) for elt in list_of_stores
+                picture_100g=value[3], picture=value[4], url=value[5])
+                search_store = Store.objects.filter(name_store=list_of_stores[0])
+                new_product.store_available.add(search_store)
 
 
                 print(type(list_of_stores), value[0], list_of_stores)
@@ -81,23 +83,28 @@ class Command(BaseCommand):
                 #test to check if a product is inserted only once in the table
                 # test = Op_food.objects.filter(name=value[0])
                 # print(test)
+
+
     def add_store(self):
         """
         Add store in the Store's table from a csv file
         """
-        with open('Projet11/stores.csv') as stores:
+        with open("stores_locations.csv", encoding="utf-8") as stores:
             reader = csv.reader(stores)
-            for row in reader:
-                 _, created = Store.objects.get_or_create(
-                name=row[0],
-                coordinates=row[1],)
-            row.save()
+            next(reader, None)
 
+            for row in reader:
+                Store.objects.create(
+                name_store=row[0],
+                latitude=row[1],
+                longitude=row[2],)
+     
 
 
 
     def delete_data(self):
         """Delete data from Categorie, Op_food and Substitute tables"""
+        #Store.objects.all().delete()
         Categorie.objects.all().delete()
         Op_food.objects.all().delete()
         Substitute.objects.all().delete()
@@ -113,6 +120,6 @@ class Command(BaseCommand):
 
 
         self.delete_data()
-        self.add_store()
+        #self.add_store()
         self.categorie_db()
         self.search_product()

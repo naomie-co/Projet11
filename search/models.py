@@ -16,7 +16,8 @@ class Categorie(models.Model):
 class Store(models.Model):
 	"""Stores the list of store names and coordinates"""
 	name_store = models.CharField(max_length=100)
-	coordinates = models.FloatField()
+	latitude = models.FloatField(null=True)
+	longitude= models.FloatField(null=True)
 
 	def __str__(self):
 		return self.name_store
