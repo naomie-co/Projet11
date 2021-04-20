@@ -75,10 +75,13 @@ class Command(BaseCommand):
                 name=value[0], nutriscore=value[1], ingredient=value[2], \
                 picture_100g=value[3], picture=value[4], url=value[5])
                 search_store = Store.objects.filter(name_store=list_of_stores[0])
-                new_product.store_available.add(search_store)
+                #print(search_store)
+                for elt in search_store: 
+                    new_product.store_available.add(elt)
 
 
-                print(type(list_of_stores), value[0], list_of_stores)
+                #print(type(list_of_stores), value[0], list_of_stores)
+                        
 
                 #test to check if a product is inserted only once in the table
                 # test = Op_food.objects.filter(name=value[0])
