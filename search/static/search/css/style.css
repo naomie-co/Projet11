@@ -64,3 +64,8 @@ i {
 .main_icone {
   color: black;
 }
+
+/*leaflet map*/
+#mapid {
+  height: 180px;
+}

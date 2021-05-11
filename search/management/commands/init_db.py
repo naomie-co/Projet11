@@ -22,7 +22,7 @@ class Command(BaseCommand):
             'tagtype_0':'categories',
             'tag_contains_0':'contains',
             'tag_0':'',
-            'page_size':10,
+            'page_size':20,
             'json':1
         }
 
@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 val["nutrition_grades"], val["ingredients_text_fr"],\
                 val["image_nutrition_url"], val["image_url"], val["url"], val["stores"]])
                 i += 1
-                if i > 5:
+                if i > 10:
                     break
             except KeyError:
                 print("Erreur dans la réception des données : ", val)
@@ -75,17 +75,26 @@ class Command(BaseCommand):
                 name=value[0], nutriscore=value[1], ingredient=value[2], \
                 picture_100g=value[3], picture=value[4], url=value[5])
                 search_store = Store.objects.filter(name_store=list_of_stores[0])
-                #print(search_store)
-                for elt in search_store: 
-                    new_product.store_available.add(elt)
+                #print("impression du store", search_store)
+                if search_store != None :
+                    for elt in search_store: 
+                        new_product.store_available.add(elt)
+                        #test if a store is saved
+                        #test = Op_food.objects.filter(name=value[0], store_available=elt)
+                        #print(test)
+
+
+
+
 
 
                 #print(type(list_of_stores), value[0], list_of_stores)
                         
 
                 #test to check if a product is inserted only once in the table
-                # test = Op_food.objects.filter(name=value[0])
-                # print(test)
+                #test = Op_food.objects.filter(name=value[0])
+
+                #print(test)
 
 
     def add_store(self):
