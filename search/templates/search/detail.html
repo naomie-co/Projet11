@@ -29,29 +29,26 @@
 		</div>
 	</div>
 
-{% for store in stores %}
-
-    <!--Block to display the map-->
-	<script type="text/javascript">
-  		//initialize the leaflet map
-		var mymap = L.map('mapid').setView([51.505, -0.09], 13);
-
-
-		L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmFvbWllLWNvIiwiYSI6ImNrb2toNWxmcjE0bDMycXJtN3JyeWh5MTUifQ.qd_YdCTV7VRg3TkhvhsFVw', {
-		    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-		    maxZoom: 18,
-		    id: 'mapbox/streets-v11',
-		    tileSize: 512,
-		    zoomOffset: -1,
-		    accessToken: 'pk.eyJ1IjoibmFvbWllLWNvIiwiYSI6ImNrb2toNWxmcjE0bDMycXJtN3JyeWh5MTUifQ.qd_YdCTV7VRg3TkhvhsFVw'
-		}).addTo(mymap);
-  	</script>	
-  	
-
     <div class="container">
       <div class="row"> 
         <div id="mapid" class="col-md" ></div>
     </div><br>
+
+
+    <!-- JS code to send the request and get the result  -->
+  	<script src="{% static 'search/js/script.js' %}"></script>
+
+
+  	<!--Send render data to Js in order to display the Leaflet map -->
+    {%for store in stores%}
+	    <script type="text/javascript">
+	    	var received_store = "{{ store.latitude|safe }}";
+	    	console.log(received_store);
+	    </script>
+
+	{%endfor%}
+
+
 
 <!--	<div class="row">
 		<div class="col-sm-12 text-center my-4">
@@ -60,9 +57,7 @@
 		</div>
 	</div>
 -->
-{% endfor %}
 
-	<!--JS code to send the request and get the result
-  	<script src="{% static 'static/search/js/script.js' %}"></script>
-  	-->
+
+
 {% endblock %}
