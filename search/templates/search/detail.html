@@ -35,21 +35,37 @@
     </div><br>
 
 
+	<!--Send render data to Js in order to display the Leaflet map -->
+
+	
+ 	<script type="text/javascript">
+    	var start_latitude = "{{ stores.0.latitude|safe}}";
+    	var start_longitude = "{{ stores.0.longitude|safe}}";
+    	console.log(start_latitude);
+    	console.log(start_longitude);
+		var mymap = L.map('mapid').setView([start_latitude, start_longitude], 5);
+    </script>
+
+	{% for store in stores %}
+
+	    <script type="text/javascript">
+	    	var lat = "{{store.latitude|safe}}";
+	    	var long ="{{store.longitude|safe}}";
+	    	var marker = L.marker([lat, long]).addTo(mymap);
+
+			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmFvbWllLWNvIiwiYSI6ImNrb2toNWxmcjE0bDMycXJtN3JyeWh5MTUifQ.qd_YdCTV7VRg3TkhvhsFVw', {
+			    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			    maxZoom: 18,
+			    id: 'mapbox/streets-v11',
+			    tileSize: 512,
+			    zoomOffset: -1,
+			    accessToken: 'pk.eyJ1IjoibmFvbWllLWNvIiwiYSI6ImNrb2toNWxmcjE0bDMycXJtN3JyeWh5MTUifQ.qd_YdCTV7VRg3TkhvhsFVw'
+			}).addTo(mymap);
+	    </script>
+    {% endfor %}
+
     <!-- JS code to send the request and get the result  -->
   	<script src="{% static 'search/js/script.js' %}"></script>
-
-
-  	<!--Send render data to Js in order to display the Leaflet map -->
-    {%for store in stores%}
-	    <script type="text/javascript">
-	    	var received_store = "{{ store.latitude|safe }}";
-	    	console.log(received_store);
-	    </script>
-
-	{%endfor%}
-
-
-
 <!--	<div class="row">
 		<div class="col-sm-12 text-center my-4">
 			 <h1 class="text-white">{{store.name_store}} {{store.latitude}} {{store.longitude}}</h1>
