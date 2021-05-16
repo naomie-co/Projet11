@@ -47,13 +47,18 @@ def detail(request, product_id):
     """Function that display the detail page of a product"""
     product = get_object_or_404(Op_food, id=product_id)
     stores = product.store_available.all()
-    stores_result = [[elt.name_store, elt.latitude, elt.longitude] for elt in stores]
-    print(stores)
-    context = {
-        'product': product,
-        'stores': stores,
-        #'stores_result': stores_result,
-    }
+    if stores != None:
+        stores_result = [[elt.name_store, elt.latitude, elt.longitude] for elt in stores if elt != None]
+        print(stores)
+        context = {
+            'product': product,
+            'stores': stores,
+            #'stores_result': stores_result,
+        }
+    else: 
+        context = {
+            'product': product,
+        }
     return render(request, 'search/detail.html', context)
 
 
