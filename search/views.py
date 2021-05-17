@@ -49,7 +49,7 @@ def detail(request, product_id):
     stores = product.store_available.all()
     if stores != None:
         stores_result = [[elt.name_store, elt.latitude, elt.longitude] for elt in stores if elt != None]
-        print(stores)
+        #print(stores)
         context = {
             'product': product,
             'stores': stores,

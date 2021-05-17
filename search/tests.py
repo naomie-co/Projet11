@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
-from search.models import categorie, op_food
+from search.models import Categorie, Op_food, Store
 
 
 class IndexPageTestCase(TestCase):
@@ -30,16 +30,20 @@ class ProductsPagesTestCase(TestCase):
 
     def setUp(self):
         """Setup products in the models"""
-        test_categorie = categorie.objects.create(name="Taboulé")
-        self.cat = categorie.objects.get(name="Taboulé")
-        test_product1 = op_food.objects.create(name="Taboulé", \
+        test_categorie = Categorie.objects.create(name="Taboulé")
+        self.cat = Categorie.objects.get(name="Taboulé")
+        test_store = Store.objects.create(name_store="auchan", latitude=4.34566, longitude=42.0430)
+        test_product1 = Op_food.objects.create(name="Taboulé", \
         nutriscore="d", ingredient="test", nutritional_values="test", \
         url="www.test.fr", picture="", picture_100g="", categorie=self.cat)
-        test_product2 = op_food.objects.create(name="Taboulé2", \
+        search_store = Store.objects.get(name_store="auchan")
+        test_product1.store_available.add(search_store)
+
+        test_product2 = Op_food.objects.create(name="Taboulé2", \
         nutriscore="c", ingredient="test2", nutritional_values="test2", \
         url="www.test2.fr", picture="", picture_100g="", categorie=self.cat)
-        self.product1 = op_food.objects.get(name="Taboulé")
-        self.product2 = op_food.objects.get(name="Taboulé2")
+        self.product1 = Op_food.objects.get(name="Taboulé")
+        self.product2 = Op_food.objects.get(name="Taboulé2")
         self.user = User.objects.create(username="test_1", is_active=1)
         self.user.set_password("password")
         self.user.save()
@@ -57,6 +61,22 @@ class ProductsPagesTestCase(TestCase):
         reponse = self.client.get(reverse('search:detail', args=(product_id,)))
         self.assertEqual(reponse.status_code, 404)
 
+    def test_detail_page_with_map(self):
+        """Test if a product is referenced in a store, a map with stores 
+        location is displayed"""   
+        
+        #Setup product with a store location
+        product_id1 = self.product1.id
+        page_with_map = self.client.get(reverse('search:detail', args=(product_id1,)))
+
+        #Setup a product without location
+        product_id2 = self.product2.id
+        page_without_map = self.client.get(reverse('search:detail', args=(product_id2,)))
+        
+        self.assertIn(b'<div id="mapid"', page_with_map.content)
+        self.assertNotIn(b'<div id="mapid"', page_without_map.content) 
+
+
     def test_my_selection_authentificated(self):
         """Test that my_selection page returns a status code 303 to log_in page
         if the user is not authentificated"""
@@ -66,7 +86,7 @@ class ProductsPagesTestCase(TestCase):
         self.assertEqual(reponse.status_code, 302)
 
     def test_products_page(self):
-        """Test that if the user logs in, the product page is different from the u
+        """Test that if the user logs in, the product page is different from the
         unconnected version"""
 
         page_without_log = self.client.get(reverse('search:products'))
@@ -81,16 +101,16 @@ class DataBaseTestCase(TestCase):
 
     def setUp(self):
         """setup products in the models"""
-        test_categorie = categorie.objects.create(name="Taboulé")
-        self.cat = categorie.objects.get(name="Taboulé")
-        test_product1 = op_food.objects.create(name="Taboulé", \
+        test_categorie = Categorie.objects.create(name="Taboulé")
+        self.cat = Categorie.objects.get(name="Taboulé")
+        test_product1 = Op_food.objects.create(name="Taboulé", \
         nutriscore="d", ingredient="test", nutritional_values="test", \
         url="www.test.fr", picture="", picture_100g="", categorie=self.cat)
-        test_product2 = op_food.objects.create(name="Taboulé2", \
+        test_product2 = Op_food.objects.create(name="Taboulé2", \
         nutriscore="c", ingredient="test2", nutritional_values="test2", \
         url="www.test2.fr", picture="", picture_100g="", categorie=self.cat)
-        self.product1 = op_food.objects.get(name="Taboulé")
-        self.product2 = op_food.objects.get(name="Taboulé2")
+        self.product1 = Op_food.objects.get(name="Taboulé")
+        self.product2 = Op_food.objects.get(name="Taboulé2")
 
     def test_user_create(self):
         """Test that a new user is created"""
@@ -100,18 +120,18 @@ class DataBaseTestCase(TestCase):
 
     def test_op_food_table(self):
         """Test that a new obejct is created"""
-        old_products = op_food.objects.count()
-        op_food.objects.create(name="taboulé", nutriscore="d",\
+        old_products = Op_food.objects.count()
+        Op_food.objects.create(name="taboulé", nutriscore="d",\
         ingredient="test", nutritional_values="test", url="www.test.fr", \
         picture="", picture_100g="", categorie=self.cat)
-        new_products = op_food.objects.count()
+        new_products = Op_food.objects.count()
         self.assertEqual(new_products, old_products + 1)
 
     def test_categorie_table(self):
         """Test that a new categorie is created"""
-        old_categorie = categorie.objects.count()
-        categorie.objects.create(name="houmous")
-        new_categorie = categorie.objects.count()
+        old_categorie = Categorie.objects.count()
+        Categorie.objects.create(name="houmous")
+        new_categorie = Categorie.objects.count()
         self.assertEqual(new_categorie, old_categorie + 1)
 
 
@@ -121,16 +141,16 @@ class DataBaseTestCase(TestCase):
 
 #     def setUp(self):
 #         """setup products in the models"""
-#         test_categorie = categorie.objects.create(name="Taboulé")
-#         self.cat = categorie.objects.get(name="Taboulé")
-#         test_product1 = op_food.objects.create(name="Taboulé", \
+#         test_categorie = Categorie.objects.create(name="Taboulé")
+#         self.cat = Categorie.objects.get(name="Taboulé")
+#         test_product1 = Op_food.objects.create(name="Taboulé", \
 #         nutriscore="d", ingredient="test", nutritional_values="test", \
 #         url="www.test.fr", picture="", picture_100g="", categorie=self.cat)
-#         test_product2 = op_food.objects.create(name="Taboulé2", \
+#         test_product2 = Op_food.objects.create(name="Taboulé2", \
 #         nutriscore="c", ingredient="test2", nutritional_values="test2", \
 #         url="www.test2.fr", picture="", picture_100g="", categorie=self.cat)
-#         self.product1 = op_food.objects.get(name="Taboulé")
-#         self.product2 = op_food.objects.get(name="Taboulé2")
+#         self.product1 = Op_food.objects.get(name="Taboulé")
+#         self.product2 = Op_food.objects.get(name="Taboulé2")
 
 #         #Create a User
 #         self.user = User.objects.create(username="test_1", is_active=1)
@@ -164,7 +184,7 @@ class DataBaseTestCase(TestCase):
 
 #         lists = WebDriverWait(self.driver, timeout).until(
 #             lambda driver: self.driver.find_element_by_name("log_in"))
-#         result = op_food.objects.count()
+#         result = Op_food.objects.count()
 #         self.assertEqual(2, result)
 
 
@@ -196,7 +216,7 @@ class DataBaseTestCase(TestCase):
 
 #         lists = WebDriverWait(self.driver, timeout).until(
 #             lambda driver: self.driver.find_element_by_name("save"))
-#         result = op_food.objects.count()
+#         result = Op_food.objects.count()
 #         self.assertEqual(2, result)
 
 
