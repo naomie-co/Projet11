@@ -8,7 +8,7 @@ ALLOWED_HOSTS = ['plateforme-pur-beurre-map.herokuapp.com']
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = S_KEY
+SECRET_KEY = " "
 
 
 # Password validation
