@@ -1,6 +1,8 @@
 from .base import *
+import dj_database_url
+
 DEBUG = False
-ALLOWED_HOSTS = ['plateforme-pur-beurre-oc.herokuapp.com']
+ALLOWED_HOSTS = ['plateforme-pur-beurre-map.herokuapp.com']
 
 
 
@@ -26,6 +28,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+MIDDLEWARE += [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+]
+
+
 
 # Static files settings
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))

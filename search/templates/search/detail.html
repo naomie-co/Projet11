@@ -13,11 +13,11 @@
 	    </div>
 	</div>
 	<div class="row">
-		<div class="col-sm-6 text-center">
+		<div class="col-sm-12 col-lg-6 text-center">
 			<h2 class="text-white">Nutriscore : </h2>
 			<img class="img-responsive"width="400" height="200" src="{% static 'search/img/nutriscore/' %}{{ product.nutriscore}}.svg"  alt="{{ product.nutriscore }}">
 		</div> 
-		<div class="col-sm-6 text-center">
+		<div class="col-sm-12 col-lg-6 text-center">
 			<h2 class="text-white">Valeurs nutritionnelles pour 100g : </h2>
 			 <img class="img-responsive" width="300" height="200" src="{{ product.picture_100g }}" alt="{{ product.name }}">
 		</div>
@@ -31,7 +31,7 @@
 {% if stores %}
     <div class="container">
       <div class="row"> 
-        <div id="mapid" class="col-md" ></div>
+        <div id="mapid" style="height: 600px;" class="col-md" ></div>
 
 	 		<script type="text/javascript">
 	    	
