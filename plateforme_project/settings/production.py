@@ -36,7 +36,7 @@ MIDDLEWARE += [
 
 
 # Static files settings
-PROJECT_ROOT = os.path.dirname()
+PROJECT_ROOT = os.path.dirname((__file__))
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
