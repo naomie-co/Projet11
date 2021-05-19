@@ -1,6 +1,6 @@
+import os
 from .base import *
 import dj_database_url
-
 DEBUG = False
 ALLOWED_HOSTS = ['plateforme-pur-beurre-map.herokuapp.com']
 
