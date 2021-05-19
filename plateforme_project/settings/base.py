@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import dj_database_url
 import django_heroku
 #from .INFO import PWORD
 
@@ -76,10 +75,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'plateforme',
-        'USER': 'postgres',
-        'PASSWORD': "firefighter77@",
-        'HOST': '',
-        'PORT': '5432',
     }
 }
 

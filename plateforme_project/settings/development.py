@@ -15,5 +15,15 @@ MIDDLEWARE += [
 ]
 
 
+DATABASES += {
+    'default': {
+        'USER': 'postgres',
+        'PASSWORD': "firefighter77@",
+        'HOST': '',
+        'PORT': '5432',
+    }
+}
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "kjdfsfjdnflsdkncksdfj9866"

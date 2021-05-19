@@ -8,8 +8,7 @@ ALLOWED_HOSTS = ['plateforme-pur-beurre-map.herokuapp.com']
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = " "
-
+SECRET_KEY = os.environ.get('S_KEY')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
