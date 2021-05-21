@@ -21,6 +21,7 @@ addons:
 
 services:
   - postgresql
+  - sqlite3
 
 before_script:
   - sudo chmod a+x /usr/bin/geckodriver
