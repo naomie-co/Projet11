@@ -21,7 +21,8 @@ def products(request):
             title = "Voici une sélection de produits :"
         else:
             query = query.capitalize()
-            products = Op_food.objects.filter(name__contains=query).order_by('nutriscore')[:6]
+            products = Op_food.objects.filter(name__contains=query)\
+            .order_by('nutriscore')[:6]
             title = "Résultats de la recherche : %s"%query
             if len(products) == 0:
                 title = "Aucun produit ne correspond aux critères de votre recherche"
@@ -47,15 +48,12 @@ def detail(request, product_id):
     """Function that display the detail page of a product"""
     product = get_object_or_404(Op_food, id=product_id)
     stores = product.store_available.all()
-    if stores != None:
-        stores_result = [[elt.name_store, elt.latitude, elt.longitude] for elt in stores if elt != None]
-        #print(stores)
+    if stores is not None:
         context = {
             'product': product,
             'stores': stores,
-            #'stores_result': stores_result,
         }
-    else: 
+    else:
         context = {
             'product': product,
         }

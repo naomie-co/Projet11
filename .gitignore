@@ -1,8 +1,12 @@
 env/
 __pycache__/
-.coverage
 geckodriver.log
 *.pyc
 plateforme_project/settings/INFO.py
 staticfiles/
 stores.csv
+search/__pycache/
+account/__pycache__/
+plateforme_project/__pychache/
+.coverage
+htmlcov/

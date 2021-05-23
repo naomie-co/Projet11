@@ -34,45 +34,28 @@
         <div id="mapid" style="height: 600px;" class="col-md" ></div>
 
 	 		<script type="text/javascript">
-	    	
-
-			//Map configuration
-	    	var start_latitude = "{{ stores.0.latitude|safe}}";
-	    	var start_longitude = "{{ stores.0.longitude|safe}}";
-			var mymap = L.map('mapid').setView([start_latitude, start_longitude], 5);
-
-			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmFvbWllLWNvIiwiYSI6ImNrb2toNWxmcjE0bDMycXJtN3JyeWh5MTUifQ.qd_YdCTV7VRg3TkhvhsFVw', {
-			    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			    maxZoom: 18,
-			    id: 'mapbox/streets-v11',
-			    tileSize: 512,
-			    zoomOffset: -1,
-			    accessToken: 'pk.eyJ1IjoibmFvbWllLWNvIiwiYSI6ImNrb2toNWxmcjE0bDMycXJtN3JyeWh5MTUifQ.qd_YdCTV7VRg3TkhvhsFVw'
-			}).addTo(mymap);
-
+	   		// Variables for map configuration
+			var lat1 = "{{ stores.0.latitude|safe}}"
+			var long1 = "{{ stores.0.longitude|safe}}"
+			var coordinates = []
 	    	</script>
 
-			{% for store in stores %}
+	    	{% for store in stores %}
 
-			    <script type="text/javascript">
-			    	//Add a marker to the store location
-			    	var lat = "{{store.latitude|safe}}";
-			    	var long ="{{store.longitude|safe}}";    	
-			    	var marker = L.marker([lat, long]).addTo(mymap);
-			    	
-			    	//Add pop-up when user clicks on store marker
-					marker.bindPopup("<b>{{store.name_store}}</b>");
+	    	<script type="text/javascript">
+	    	//Creates an array with the location and name of the stores to use to display the markers
+	    	coordinates.push(["{{store.latitude|safe}}", "{{store.longitude|safe}}", "{{store.name_store|safe}}"]);
+	    	</script>
 
-			    </script>
-		    {% endfor %}
+	    	{% endfor%}
 
-		    <!-- JS code to send the request and get the result  
-		  	<script src="{% static 'search/js/script.js' %}"></script>
-			-->
+		    <!-- JS code to send the request and get the result --> 
+		  	<script type="text/javascript" src="{% static 'search/js/script.js' %}"></script>
+			
 		</div><br>
 
 	{%else%}
-	<div class="col-sm-6 text-center">
+	<div class="col-sm-12 text-center my-4">
 			<h2 class="text-white">Pas de lieu de vente référencé pour ce produit.</h2>
 		</div>
 	</div>	

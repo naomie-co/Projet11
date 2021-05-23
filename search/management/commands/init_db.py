@@ -1,10 +1,10 @@
 """Script to initialize the platform database from the OpenFoodFacts API"""
 
+import csv
 import requests
 from django.core.management.base import BaseCommand
 from search.models import Categorie, Op_food, Substitute, Store
 from search.const import CATEGORIES
-import csv
 
 
 
@@ -48,7 +48,8 @@ class Command(BaseCommand):
             try:
                 data.append([val["product_name_fr"],\
                 val["nutrition_grades"], val["ingredients_text_fr"],\
-                val["image_nutrition_url"], val["image_url"], val["url"], val["stores"]])
+                val["image_nutrition_url"], val["image_url"], val["url"],\
+                val["stores"]])
                 i += 1
                 if i > 10:
                     break
@@ -75,26 +76,9 @@ class Command(BaseCommand):
                 name=value[0], nutriscore=value[1], ingredient=value[2], \
                 picture_100g=value[3], picture=value[4], url=value[5])
                 search_store = Store.objects.filter(name_store=list_of_stores[0])
-                #print("impression du store", search_store)
-                if search_store != None :
-                    for elt in search_store: 
+                if search_store != None:
+                    for elt in search_store:
                         new_product.store_available.add(elt)
-                        #test if a store is saved
-                        #test = Op_food.objects.filter(name=value[0], store_available=elt)
-                        #print(test)
-
-
-
-
-
-
-                #print(type(list_of_stores), value[0], list_of_stores)
-                        
-
-                #test to check if a product is inserted only once in the table
-                #test = Op_food.objects.filter(name=value[0])
-
-                #print(test)
 
 
     def add_store(self):
@@ -107,11 +91,9 @@ class Command(BaseCommand):
 
             for row in reader:
                 Store.objects.create(
-                name_store=row[0],
-                latitude=row[1],
-                longitude=row[2],)
-     
-
+                    name_store=row[0],
+                    latitude=row[1],
+                    longitude=row[2],)
 
 
     def delete_data(self):
@@ -124,7 +106,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Delete data then fill the database
         """
-        #if categorie.objects.count() == 0: 
+        #if categorie.objects.count() == 0:
         #    self.categorie_db()
         #    self.search_product()
         #else:
